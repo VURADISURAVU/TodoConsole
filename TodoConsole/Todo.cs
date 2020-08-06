@@ -14,6 +14,8 @@ namespace TodoConsole
         [Column(TypeName = "datetime")]
         public DateTime Date { get; set; }
 
+        TodoValidation tv = new TodoValidation();
+
         public void CreateTodo()
         {
             using (ApplicationContext db = new ApplicationContext())
@@ -23,7 +25,7 @@ namespace TodoConsole
                 Console.WriteLine("Дату дедлайна");
                 string date = Console.ReadLine();
 
-                if (IsDate(date))
+                if (tv.IsDate(date))
                 {
                     Todo newTodo = new Todo { Title = title, Date = Convert.ToDateTime(date) };
 
@@ -45,7 +47,7 @@ namespace TodoConsole
         {
             using (ApplicationContext db = new ApplicationContext())
             {
-                if(!DbFilled())
+                if(!tv.DbFilled())
                 {
                     Console.WriteLine("Ваш спиок дел пуст, вам нечего удалять \n");
                 } else
@@ -74,7 +76,7 @@ namespace TodoConsole
             {
                 var todos = db.TodoList.ToList();
 
-                if(!DbFilled())
+                if (!tv.DbFilled())
                 {
                     Console.WriteLine("Ваш список дел пуст \n");
                 } else
@@ -103,37 +105,6 @@ namespace TodoConsole
                     Console.ForegroundColor = ConsoleColor.Red;
                     Console.WriteLine($"{t.Title}. Надо было сделать до: {t.Date:d}");
                     Console.ResetColor();
-                }
-            }
-        }
-
-        public static bool IsDate(string tempDate)
-        {
-            DateTime fromDateValue;
-            var formats = new[] { "dd/MM/yyyy", "yyyy-MM-dd", "dd.MM.yyyy" };
-            if (DateTime.TryParseExact(tempDate, 
-                formats, 
-                System.Globalization.CultureInfo.InvariantCulture, 
-                System.Globalization.DateTimeStyles.None, 
-                out fromDateValue))
-            {
-                return true;
-            }
-            else
-            {
-                return false;
-            }
-        }
-
-        public static bool DbFilled()
-        {
-            using (ApplicationContext db = new ApplicationContext()) {
-                if(db.TodoList.Count() == 0)
-                {
-                    return false;
-                } else
-                {
-                    return true;
                 }
             }
         }
