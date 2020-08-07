@@ -11,7 +11,7 @@ namespace TodoConsole
     {
         public static void Main()
         {
-            Todo todo = new Todo();
+            TodoController todo = new TodoController();
             todo.CheckDate();
             bool alive = true;
             while(alive)
